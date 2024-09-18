@@ -2,21 +2,36 @@
 
 public class Pet
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; } = default!;
-    public PetType PetType { get; set; } = default!;
-    public string Description { get; set; } = default!;
-    public BreedInfo BreedInfo { get; set; } = default!;
-    public string Color { get; set; } = default!;
-    public string HealthInfo { get; set; } = default!;
-    public string Address { get; set; } = default!;
-    public string TelephoneNumber { get; set; } = default!;
-    public float Weight { get; set; }
-    public float Height { get; set; }
-    public bool IsCastrated { get; set; }
-    public DateTime BirthdayTime { get; set; }
-    public bool IsVaccinated { get; set; }
-    public HelpStatus HelpStatus { get; set; }
-    public List<Requisite> Requisites { get; set; } = default!;
-    public DateTime CreateAt { get; set; } = DateTime.UtcNow;
+    public Guid Id { get; private set; } = Guid.NewGuid(); // Уникальный идентификатор
+    public string Name { get; private set; } = default!; // Кличка
+    public string Species { get; private set; } = default!; // Вид (например, собака, кошка)
+    public string Description { get; private set; } = default!; // Общее описание
+    public BreedInfo BreedInfo { get; private set; } = default!; // Порода
+    public string Color { get; private set; } = default!; // Окрас
+    public HealthInfo Health { get; private set; } = default!; // Информация о здоровье питомца
+    public Address Address { get; private set; } = default!; // Адрес, где находится питомец
+    public string OwnerPhoneNumber { get; private set; } = default!;// Номер телефона владельца
+    public float Weight { get; private set; } // Вес в килограммах
+    public float Height { get; private set; }// Рост в сантиметрах
+    public DateTime DateOfBirth { get; private set; } // Дата рождения питомца
+    public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;// Статус помощи (нуждается в помощи, ищет дом, нашел дом)
+    private readonly List<PaymentDetail> _paymentInfo = []; // Реквизиты для помощи
+    public IReadOnlyList<PaymentDetail> PaymentInfo  => _paymentInfo; // Реквизиты для помощи
+    public DateTime CreateAt { get; private set; } = DateTime.UtcNow; // Дата создания
+
+    // ef
+    public Pet()
+    {
+        
+    }
+    
+    public void UpdateStatus(HelpStatus helpStatus)
+    {
+        HelpStatus = helpStatus;
+    }
+    public void AddRequisite(PaymentDetail paymentDetail)
+    {
+        _paymentInfo.Add(paymentDetail);
+    }
 }
+
