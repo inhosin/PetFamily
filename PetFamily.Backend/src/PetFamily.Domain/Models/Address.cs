@@ -2,20 +2,23 @@
 
 namespace PetFamily.Domain.Models;
 
+/// <summary>
+/// Информация об адресе
+/// </summary>
 public class Address
 {
-    public string Street { get; init; }
-    public string City { get; init;}
-    public string State { get; init;}
-    public string ZipCode { get; init;}
+    public string Street { get; init; } // Улица
+    public string City { get; init;} // Город
+    public string State { get; init;} // Страна/регион
+    public string ZipCode { get; init;} // Индекс
     
-    private Address(string street, string city, string state, string zipCode)
-    {
-        Street = street;
-        City = city;
-        State = state;
-        ZipCode = zipCode;
-    }
+    // private Address(string street, string city, string state, string zipCode)
+    // {
+    //     Street = street;
+    //     City = city;
+    //     State = state;
+    //     ZipCode = zipCode;
+    // }
 
     public static Result<Address, string> Create(string street, string city, string state, string zipCode)
     {
@@ -31,6 +34,6 @@ public class Address
         if (string.IsNullOrWhiteSpace(zipCode))
             return "Zip code cannot be empty";
 
-        return new Address(street, city, state, zipCode);
+        return new Address { Street = street, City = city, State = state, ZipCode = zipCode };
     }
 }

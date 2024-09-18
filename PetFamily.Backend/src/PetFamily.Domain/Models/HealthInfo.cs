@@ -1,19 +1,28 @@
-﻿namespace PetFamily.Domain.Models;
+﻿using CSharpFunctionalExtensions;
 
+namespace PetFamily.Domain.Models;
+
+/// <summary>
+/// Информация о здоровье питомца
+/// </summary>
 public class HealthInfo
 {
-    public Guid PetId { get; init; }
     public bool IsCastrated { get; init; }
     public bool IsVaccinated { get; init; }
-    public string AdditionalInfo { get; init; } // Дополнительная информация о здоровье
+    public float Weight { get; private set; } // Вес в килограммах
+    public float Height { get; private set; }// Рост в сантиметрах
+    public string AdditionalInfo { get; init; } = default!; // Дополнительная информация о здоровье
 
-    public static HealthInfo Create(Guid petId, bool isCastrated, bool isVaccinated, string additionalInfo)
+    public static Result<HealthInfo> Create(bool isCastrated, bool isVaccinated, float weight, float height, string additionalInfo)
     {
+        if (weight < 0 || height < 0) return Result.Failure<HealthInfo>("Weight or height cannot be negative");
+        
         return new HealthInfo
         {
-            PetId = petId,
             IsCastrated = isCastrated,
             IsVaccinated = isVaccinated,
+            Weight = weight,
+            Height = height,
             AdditionalInfo = additionalInfo
         };
     }
