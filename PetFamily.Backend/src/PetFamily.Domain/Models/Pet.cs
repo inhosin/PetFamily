@@ -76,7 +76,7 @@ public class Pet
                 photo.SetAsMainPhoto(false);
             }
         }
-        var photoResult = PetPhoto.Create(storagePath, isMainPhoto);
+        var photoResult = PetPhoto.Create(this.Id, storagePath, isMainPhoto);
         if (photoResult.IsFailure)
             return photoResult;
         
