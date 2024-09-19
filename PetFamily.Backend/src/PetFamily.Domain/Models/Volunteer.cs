@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Models.ValueObjects;
 
 namespace PetFamily.Domain.Models;
 
@@ -7,22 +8,22 @@ namespace PetFamily.Domain.Models;
 /// </summary>
 public class Volunteer
 {
-    public Guid Id { get; init; }                            // Уникальный идентификатор
-    public string FullName { get; init; }                    // ФИО
-    public string Email { get; init; }                       // Email
-    public string Description { get; init; }                 // Общее описание
-    public int YearsOfExperience { get; init; }              // Опыт в годах
-    public string PhoneNumber { get; init; }                 // Номер телефона
-    private List<SocialNetwork> _socialNetworks { get; } = []; // Список социальных сетей
+    public Guid Id { get; private set; }                            // Уникальный идентификатор
+    public string FullName { get; private set; }                    // ФИО
+    public string Email { get; private set; }                       // Email
+    public string Description { get; private set; }                 // Общее описание
+    public int YearsOfExperience { get; private set; }              // Опыт в годах
+    public string PhoneNumber { get; private set; }                 // Номер телефона
+    private readonly List<SocialNetwork> _socialNetworks = [];
     public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks; // Список социальных сетей
 
-    private List<PaymentDetail> _paymentInfo { get; } = [];
+    private readonly List<PaymentDetail> _paymentInfo = [];
     public IReadOnlyList<PaymentDetail> PaymentInfo => _paymentInfo; // Список реквизитов для помощи
-    private List<Pet> _pets { get; } = [];
-    public IReadOnlyList<Pet> Pets => _pets;    // Список питомцев
+    private readonly List<Pet> _pets = [];
+    public IReadOnlyList<Pet> Pets => _pets;                         // Список питомцев
     
     // Конструктор ef-core
-    public Volunteer()
+    private Volunteer()
     {
     }
 
@@ -46,6 +47,65 @@ public class Volunteer
             YearsOfExperience = yearsOfExperience,
             PhoneNumber = phoneNumber
         };
+    }
+
+    /// <summary>
+    /// Метод для обновления ФИО
+    /// </summary>
+    /// <param name="fullName"></param>
+    /// <returns></returns>
+    public Result UpdateFullname(string fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+            return Result.Failure("Поле ФИО не может быть пустым");
+        if (fullName.Length < 2)
+            return Result.Failure("Поле ФИО не может быть пустым");
+        FullName = fullName;
+        return Result.Success();
+    }
+    /// <summary>
+    /// Метод для обновления Email
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    public Result UpdateEmail(string email)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return Result.Failure("Поле Email не может быть пустым");
+        if (email.Length < 2)
+            return Result.Failure("Поле Email не может быть пустым");
+        if (!email.Contains('@'))
+            return Result.Failure("Поле Email не может быть пустым");
+        Email = email;
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Метод для обновления описания
+    /// </summary>
+    /// <param name="description"></param>
+    /// <returns></returns>
+    public Result UpdateDescription(string description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+            return Result.Failure("Поле Общее описание не может быть пустым");
+        if (description.Length < 2)
+            return Result.Failure("Поле Общее описание не может быть пустым");
+        Description = description;
+        return Result.Success();
+    }
+
+    /// <summary>
+    /// Метод для обновления опыта в годах
+    /// </summary>
+    /// <param name="yearsOfExperience"></param>
+    /// <returns></returns>
+    public Result UpdateYearsOfExperience(int yearsOfExperience)
+    {
+        if (yearsOfExperience < 0)
+            return Result.Failure("Поле Опыт в годах не может быть пустым");
+        YearsOfExperience = yearsOfExperience;
+        return Result.Success();
     }
 
     /// <summary>

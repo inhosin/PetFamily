@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PetFamily.Domain.Models.ValueObjects;
 
 namespace PetFamily.Domain.Models;
 
@@ -20,24 +21,28 @@ public class Pet
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;// Статус помощи (нуждается в помощи, ищет дом, нашел дом)
     private readonly List<PaymentDetail> _paymentInfo = []; // Реквизиты для помощи
     public IReadOnlyList<PaymentDetail> PaymentInfo  => _paymentInfo; // Реквизиты для помощи
+    private List<PetPhoto> _photos = [];
+    public IReadOnlyList<PetPhoto> Photos => _photos; // Фотографии
     public DateTime CreateAt { get; private set; } = DateTime.UtcNow; // Дата создания
 
     // ef
-    public Pet()
+    private Pet()
     {
-        
     }
 
     public static Result<Pet> Create(string name, string species, string description, BreedInfo? breedInfo, string color,
         HealthInfo? healthInfo, Address? address, string ownerPhoneNumber, DateTime dateOfBirth)
     {
-        if (string.IsNullOrEmpty(name)) return Result.Failure<Pet>("Name is required");
-        if (string.IsNullOrEmpty(species)) return Result.Failure<Pet>("Species is required");
-        if (string.IsNullOrEmpty(description)) return Result.Failure<Pet>("Description is required");
-        if (breedInfo is null) return Result.Failure<Pet>("BreedInfo is required");
-        if (string.IsNullOrEmpty(color)) return Result.Failure<Pet>("Color is required");
-        if (healthInfo is null) return Result.Failure<Pet>("HealthInfo is required");
-        if (address is null) return Result.Failure<Pet>("Address is required");
+        if (string.IsNullOrEmpty(name)) return Result.Failure<Pet>("Кличка обязательна");
+        if (name.Length < 2) return Result.Failure<Pet>("Длина кличка не может быть меньше 2 символов");
+        if (string.IsNullOrEmpty(species)) return Result.Failure<Pet>("Вид питомца обязателен");
+        if (species.Length < 2) return Result.Failure<Pet>("Длина порода не может быть меньше 2 символов");
+        if (string.IsNullOrEmpty(description)) return Result.Failure<Pet>("Описание обязательно");
+        if (breedInfo is null) return Result.Failure<Pet>("Порода обязательна");
+        if (string.IsNullOrEmpty(color)) return Result.Failure<Pet>("Цвет обязателен");
+        if (color.Length < 5) return Result.Failure<Pet>("Длина цвета не может быть меньше 5 символов");
+        if (healthInfo is null) return Result.Failure<Pet>("Информация о здоровье питомца обязательна");
+        if (address is null) return Result.Failure<Pet>("Адрес обязателен");
         
         return new Pet
         {
@@ -55,10 +60,44 @@ public class Pet
         };
     }
     
+    /// <summary>
+    /// Добавление фотографии
+    /// </summary>
+    /// <param name="storagePath"></param>
+    /// <param name="isMainPhoto"></param>
+    /// <returns></returns>
+    public Result AddPhoto(string storagePath, bool isMainPhoto = false)
+    {
+        if (isMainPhoto)
+        {
+            // Установим только одну фотографию как главную
+            foreach (var photo in _photos)
+            {
+                photo.SetAsMainPhoto(false);
+            }
+        }
+        var photoResult = PetPhoto.Create(storagePath, isMainPhoto);
+        if (photoResult.IsFailure)
+            return photoResult;
+        
+        _photos.Add(photoResult.Value);
+        
+        return Result.Success();
+    }
+    
+    /// <summary>
+    /// Обновить статус помощи
+    /// </summary>
+    /// <param name="helpStatus"></param>
     public void UpdateStatus(HelpStatus helpStatus)
     {
         HelpStatus = helpStatus;
     }
+    
+    /// <summary>
+    /// Добавить реквизиты для помощи
+    /// </summary>
+    /// <param name="paymentDetail"></param>
     public void AddPayment(PaymentDetail paymentDetail)
     {
         _paymentInfo.Add(paymentDetail);
