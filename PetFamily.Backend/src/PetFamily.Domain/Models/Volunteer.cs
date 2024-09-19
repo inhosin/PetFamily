@@ -144,7 +144,7 @@ public class Volunteer
     /// <returns></returns>
     public int PetsWhoFoundHomeCount()
     {
-        return Pets.Count(p => p.HelpStatus is HelpStatus.FoundedHome);
+        return _pets.Count(p => p.HelpStatus is HelpStatus.FoundedHome);
     }
 
     /// <summary>
@@ -153,7 +153,7 @@ public class Volunteer
     /// <returns></returns>
     public int PetsLookingForHomeCount()
     {
-        return Pets.Count(p => p.HelpStatus is HelpStatus.LookingForHome);
+        return _pets.Count(p => p.HelpStatus is HelpStatus.LookingForHome);
     }
 
     /// <summary>
@@ -162,6 +162,6 @@ public class Volunteer
     /// <returns></returns>
     public int PetsNeedHelpCount()
     {
-        return Pets.Count(p => p.HelpStatus == HelpStatus.NeedHelp);
+        return _pets.Count(p => p.HelpStatus == HelpStatus.NeedHelp);
     }
 }

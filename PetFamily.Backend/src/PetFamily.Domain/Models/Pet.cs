@@ -21,7 +21,7 @@ public class Pet
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;// Статус помощи (нуждается в помощи, ищет дом, нашел дом)
     private readonly List<PaymentDetail> _paymentInfo = []; // Реквизиты для помощи
     public IReadOnlyList<PaymentDetail> PaymentInfo  => _paymentInfo; // Реквизиты для помощи
-    private List<PetPhoto> _photos = [];
+    private readonly List<PetPhoto> _photos = [];
     public IReadOnlyList<PetPhoto> Photos => _photos; // Фотографии
     public DateTime CreateAt { get; private set; } = DateTime.UtcNow; // Дата создания
 
