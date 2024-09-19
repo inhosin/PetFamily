@@ -1,13 +1,16 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace PetFamily.Domain.Models;
+namespace PetFamily.Domain.Models.ValueObjects;
 
+/// <summary>
+/// Информация об адресе
+/// </summary>
 public class Address
 {
-    public string Street { get; init; }
-    public string City { get; init;}
-    public string State { get; init;}
-    public string ZipCode { get; init;}
+    public string Street { get; } // Улица
+    public string City { get; } // Город
+    public string State { get; } // Страна/регион
+    public string ZipCode { get; } // Индекс
     
     private Address(string street, string city, string state, string zipCode)
     {
