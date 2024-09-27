@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Domain.Models.ValueObjects;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Models;
 
 /// <summary>
 /// Волонтёр
 /// </summary>
-public class Volunteer
+public class Volunteer : EntityBase<VolunteerId>
 {
-    public Guid Id { get; private set; }                            // Уникальный идентификатор
     public string FullName { get; private set; }                    // ФИО
     public string Email { get; private set; }                       // Email
     public string Description { get; private set; }                 // Общее описание
@@ -23,9 +23,7 @@ public class Volunteer
     public IReadOnlyList<Pet> Pets => _pets;                         // Список питомцев
     
     // Конструктор ef-core
-    private Volunteer()
-    {
-    }
+    private Volunteer(VolunteerId id) : base(id) {}
 
     public static Result<Volunteer> Create(string fullName, string email, string description, int yearsOfExperience, string phoneNumber)
     {
@@ -38,9 +36,8 @@ public class Volunteer
         if (yearsOfExperience < 0)
             return Result.Failure<Volunteer>("Поле Опыт в годах не может быть пустым");
 
-        return new Volunteer
+        return new Volunteer(VolunteerId.New())
         {
-            Id = Guid.NewGuid(),
             FullName = fullName, 
             Email = email, 
             Description = description, 
