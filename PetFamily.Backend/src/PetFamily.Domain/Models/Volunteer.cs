@@ -9,22 +9,36 @@ namespace PetFamily.Domain.Models;
 /// </summary>
 public class Volunteer : EntityBase<VolunteerId>
 {
-    public string FullName { get; private set; }                    // ФИО
-    public string Email { get; private set; }                       // Email
-    public string Description { get; private set; }                 // Общее описание
+    public string FullName { get; private set; } = default!; // ФИО
+    public string Email { get; private set; }  = default!;                      // Email
+    public string Description { get; private set; }  = default!;                // Общее описание
     public int YearsOfExperience { get; private set; }              // Опыт в годах
-    public string PhoneNumber { get; private set; }                 // Номер телефона
-    private readonly List<SocialNetwork> _socialNetworks = [];
-    public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks; // Список социальных сетей
-
-    private readonly List<PaymentDetail> _paymentInfo = [];
-    public IReadOnlyList<PaymentDetail> PaymentInfo => _paymentInfo; // Список реквизитов для помощи
+    public string PhoneNumber { get; private set; }  = default!; // Номер телефона
+    public SocialNetworkList? SocialNetworks { get; private set; } // Список социальных сетей
+    public PaymentInfoList? Payments { get; private set; } // Список реквизитов для помощи
     private readonly List<Pet> _pets = [];
     public IReadOnlyList<Pet> Pets => _pets;                         // Список питомцев
-    
-    // Конструктор ef-core
     private Volunteer(VolunteerId id) : base(id) {}
-
+    private Volunteer(
+        VolunteerId id,
+        string fullName,
+        string email,
+        string description,
+        int yOExperience,
+        string phoneNumber,
+        IEnumerable<Pet> ownedPets,
+        IEnumerable<PaymentInfo> paymentMethods,
+        IEnumerable<SocialNetwork> socialNetworks) : base(id)
+    {
+        FullName = fullName;
+        Email = email;
+        Description = description;
+        YearsOfExperience = yOExperience;
+        PhoneNumber = phoneNumber;
+        _pets = ownedPets.ToList();
+        Payments = new PaymentInfoList(paymentMethods.ToList());
+        SocialNetworks = new SocialNetworkList(socialNetworks.ToList());
+    }
     public static Result<Volunteer> Create(string fullName, string email, string description, int yearsOfExperience, string phoneNumber)
     {
         if (string.IsNullOrWhiteSpace(fullName))
@@ -35,14 +49,16 @@ public class Volunteer : EntityBase<VolunteerId>
             return Result.Failure<Volunteer>("Поле Общее описание не может быть пустым");
         if (yearsOfExperience < 0)
             return Result.Failure<Volunteer>("Поле Опыт в годах не может быть пустым");
-
-        return new Volunteer(VolunteerId.New())
+        
+        return new Volunteer(VolunteerId.NewId())
         {
             FullName = fullName, 
             Email = email, 
             Description = description, 
             YearsOfExperience = yearsOfExperience,
-            PhoneNumber = phoneNumber
+            PhoneNumber = phoneNumber,
+            SocialNetworks = new SocialNetworkList([]),
+            Payments = new PaymentInfoList([]),
         };
     }
 
@@ -53,6 +69,7 @@ public class Volunteer : EntityBase<VolunteerId>
     /// <returns></returns>
     public Result UpdateFullname(string fullName)
     {
+                  
         if (string.IsNullOrWhiteSpace(fullName))
             return Result.Failure("Поле ФИО не может быть пустым");
         if (fullName.Length < 2)
@@ -111,8 +128,9 @@ public class Volunteer : EntityBase<VolunteerId>
     /// <param name="socialNetwork"></param>
     public void AddSocialNetwork(SocialNetwork socialNetwork)
     {
-        if (!_socialNetworks.Contains(socialNetwork))
-            _socialNetworks.Add(socialNetwork);
+        SocialNetworks ??= new SocialNetworkList([socialNetwork]);
+        if (SocialNetworks.Data.Contains(socialNetwork))
+            SocialNetworks.Data.Add(socialNetwork);
     }
 
     /// <summary>
@@ -128,11 +146,12 @@ public class Volunteer : EntityBase<VolunteerId>
     /// <summary>
     /// Метод для добавления реквизита для помощи
     /// </summary>
-    /// <param name="paymentDetail"></param>
-    public void AddPaymentDetail(PaymentDetail paymentDetail)
+    /// <param name="payment"></param>
+    public void AddPaymentDetail(PaymentInfo payment)
     {
-        if (!_paymentInfo.Contains(paymentDetail))
-            _paymentInfo.Add(paymentDetail);
+        Payments ??= new PaymentInfoList([payment]);
+        if (!Payments.Data.Contains(payment))
+            Payments.Data.Add(payment);
     }
 
     /// <summary>

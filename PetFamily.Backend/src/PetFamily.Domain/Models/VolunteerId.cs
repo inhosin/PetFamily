@@ -10,7 +10,7 @@ public class VolunteerId: Id<Guid>
     /// <summary>
     /// Create a new VolunteerId
     /// </summary>
-    public static VolunteerId New => new(Guid.NewGuid());
+    public static VolunteerId NewId() => new(Guid.NewGuid());
     /// <summary>
     /// Create an empty VolunteerId
     /// </summary>
