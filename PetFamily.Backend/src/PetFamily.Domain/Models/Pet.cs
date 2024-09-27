@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using PetFamily.Domain.Models.ValueObjects;
+using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Models;
 
 /// <summary>
 /// Питомец
 /// </summary>
-public class Pet
+public class Pet : EntityBase<PetId>
 {
-    public Guid Id { get; private set; } = Guid.NewGuid(); // Уникальный идентификатор
     public string Name { get; private set; } = default!; // Кличка
     public string Species { get; private set; } = default!; // Вид (например, собака, кошка)
     public string Description { get; private set; } = default!; // Общее описание
@@ -26,7 +26,7 @@ public class Pet
     public DateTime CreateAt { get; private set; } = DateTime.UtcNow; // Дата создания
 
     // ef
-    private Pet()
+    private Pet(PetId id) : base(id)
     {
     }
 
@@ -44,9 +44,8 @@ public class Pet
         if (healthInfo is null) return Result.Failure<Pet>("Информация о здоровье питомца обязательна");
         if (address is null) return Result.Failure<Pet>("Адрес обязателен");
         
-        return new Pet
+        return new Pet(PetId.New())
         {
-            Id = Guid.NewGuid(),
             Name = name,
             Species = species,
             Description = description,
