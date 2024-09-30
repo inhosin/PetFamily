@@ -11,10 +11,11 @@ public class PetId : Id<Guid>
     /// Create a new PetId
     /// </summary>
     /// <returns></returns>
-    public static PetId New() => new(Guid.NewGuid());
+    public static PetId CreateNew() => new(Guid.NewGuid());
     /// <summary>
     /// Create an empty PetId
     /// </summary>
     /// <returns></returns>
-    public static PetId Empty() => new(Guid.Empty);
+    public static PetId CreateEmpty() => new(Guid.Empty);
+    public static PetId Create(Guid value) => new(value);
 }

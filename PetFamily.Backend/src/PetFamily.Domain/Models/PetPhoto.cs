@@ -3,13 +3,14 @@ using PetFamily.Domain.Shared;
 
 namespace PetFamily.Domain.Models;
 
-public class PetPhoto
+public class PetPhoto : EntityBase<PetPhotoId>
 {
     public PetId PetId { get; }
+    public Pet Pet { get; }
     public string StoragePath { get; }   // Путь хранения фотографии
     public bool IsMainPhoto { get; private set; }
 
-    private PetPhoto(PetId petId, string storagePath, bool isMainPhoto)
+    private PetPhoto(PetPhotoId id, PetId petId, string storagePath, bool isMainPhoto) : base(id)
     {
         PetId = petId;
         StoragePath = storagePath;
@@ -24,7 +25,7 @@ public class PetPhoto
             && !storagePath.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             return Result.Failure<PetPhoto>("Фотография должна быть в формате jpg или png");
         
-        return new PetPhoto(petId, storagePath, isMainPhoto);
+        return new PetPhoto(PetPhotoId.CreateNew(), petId, storagePath, isMainPhoto);
     }
 
     /// <summary>

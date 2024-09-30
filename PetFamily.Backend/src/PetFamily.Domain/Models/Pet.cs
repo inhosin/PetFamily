@@ -19,8 +19,6 @@ public class Pet : EntityBase<PetId>
     public string OwnerPhoneNumber { get; private set; } = default!;// Номер телефона владельца
     public DateTime DateOfBirth { get; private set; } // Дата рождения питомца
     public HelpStatus HelpStatus { get; private set; } = HelpStatus.NeedHelp;// Статус помощи (нуждается в помощи, ищет дом, нашел дом)
-    private readonly List<PaymentDetail> _paymentInfo = []; // Реквизиты для помощи
-    public IReadOnlyList<PaymentDetail> PaymentInfo  => _paymentInfo; // Реквизиты для помощи
     private readonly List<PetPhoto> _photos = [];
     public IReadOnlyList<PetPhoto> Photos => _photos; // Фотографии
     public DateTime CreateAt { get; private set; } = DateTime.UtcNow; // Дата создания
@@ -44,7 +42,7 @@ public class Pet : EntityBase<PetId>
         if (healthInfo is null) return Result.Failure<Pet>("Информация о здоровье питомца обязательна");
         if (address is null) return Result.Failure<Pet>("Адрес обязателен");
         
-        return new Pet(PetId.New())
+        return new Pet(PetId.CreateNew())
         {
             Name = name,
             Species = species,
@@ -55,6 +53,7 @@ public class Pet : EntityBase<PetId>
             Address = address,
             OwnerPhoneNumber = ownerPhoneNumber,
             DateOfBirth = dateOfBirth,
+            HelpStatus = HelpStatus.NeedHelp,
             CreateAt = DateTime.UtcNow
         };
     }
@@ -91,15 +90,6 @@ public class Pet : EntityBase<PetId>
     public void UpdateStatus(HelpStatus helpStatus)
     {
         HelpStatus = helpStatus;
-    }
-    
-    /// <summary>
-    /// Добавить реквизиты для помощи
-    /// </summary>
-    /// <param name="paymentDetail"></param>
-    public void AddPayment(PaymentDetail paymentDetail)
-    {
-        _paymentInfo.Add(paymentDetail);
     }
 }
 
