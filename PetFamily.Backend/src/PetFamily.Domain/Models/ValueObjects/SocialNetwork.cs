@@ -10,11 +10,11 @@ namespace PetFamily.Domain.Models.ValueObjects;
 /// <param name="Link"></param>
 public record SocialNetwork
 {
-    public string? Name { get; }
+    public string Name { get; } = null!;
     public string Link { get; } = null!;
 
     [JsonConstructor]
-    protected SocialNetwork(string link, string? name)
+    private SocialNetwork(string link, string? name)
     {
         Name = name;
         Link = link;
@@ -26,4 +26,7 @@ public record SocialNetwork
     }
 }
 
-public record SocialNetworkList(List<SocialNetwork>? Data);
+public record SocialNetworkList
+{
+    public List<SocialNetwork> Data { get; set; }
+}

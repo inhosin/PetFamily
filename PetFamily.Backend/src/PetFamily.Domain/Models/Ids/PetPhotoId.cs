@@ -10,10 +10,11 @@ public class PetPhotoId: Id<Guid>
     /// <summary>
     /// Create a new PetPhotoId
     /// </summary>
-    public static PetPhotoId NewId() => new(Guid.NewGuid());
+    public static PetPhotoId CreateNew() => new(Guid.NewGuid());
     /// <summary>
     /// Create an empty PetPhotoId
     /// </summary>
     /// <returns></returns>
-    public static PetPhotoId Empty() => new(Guid.Empty);
+    public static PetPhotoId CreateEmpty() => new(Guid.Empty);
+    public static PetPhotoId Create(Guid value) => new(value);
 }

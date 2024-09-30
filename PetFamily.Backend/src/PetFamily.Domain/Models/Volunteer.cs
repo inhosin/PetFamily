@@ -36,8 +36,8 @@ public class Volunteer : EntityBase<VolunteerId>
         YearsOfExperience = yOExperience;
         PhoneNumber = phoneNumber;
         _pets = ownedPets.ToList();
-        Payments = new PaymentInfoList(paymentMethods.ToList());
-        SocialNetworks = new SocialNetworkList(socialNetworks.ToList());
+        Payments = new PaymentInfoList { Data = paymentMethods.ToList() };
+        SocialNetworks = new SocialNetworkList() { Data = socialNetworks.ToList() };
     }
     public static Result<Volunteer> Create(string fullName, string email, string description, int yearsOfExperience, string phoneNumber)
     {
@@ -50,15 +50,15 @@ public class Volunteer : EntityBase<VolunteerId>
         if (yearsOfExperience < 0)
             return Result.Failure<Volunteer>("Поле Опыт в годах не может быть пустым");
         
-        return new Volunteer(VolunteerId.NewId())
+        return new Volunteer(VolunteerId.CreateNew())
         {
             FullName = fullName, 
             Email = email, 
             Description = description, 
             YearsOfExperience = yearsOfExperience,
             PhoneNumber = phoneNumber,
-            SocialNetworks = new SocialNetworkList([]),
-            Payments = new PaymentInfoList([]),
+            SocialNetworks = new SocialNetworkList() { Data = [] },
+            Payments = new PaymentInfoList() { Data = [] },
         };
     }
 
@@ -128,8 +128,7 @@ public class Volunteer : EntityBase<VolunteerId>
     /// <param name="socialNetwork"></param>
     public void AddSocialNetwork(SocialNetwork socialNetwork)
     {
-        SocialNetworks ??= new SocialNetworkList([socialNetwork]);
-        if (SocialNetworks.Data.Contains(socialNetwork))
+        if (SocialNetworks != null && SocialNetworks.Data.Contains(socialNetwork))
             SocialNetworks.Data.Add(socialNetwork);
     }
 
@@ -149,8 +148,7 @@ public class Volunteer : EntityBase<VolunteerId>
     /// <param name="payment"></param>
     public void AddPaymentDetail(PaymentInfo payment)
     {
-        Payments ??= new PaymentInfoList([payment]);
-        if (!Payments.Data.Contains(payment))
+        if (Payments != null && !Payments.Data.Contains(payment))
             Payments.Data.Add(payment);
     }
 

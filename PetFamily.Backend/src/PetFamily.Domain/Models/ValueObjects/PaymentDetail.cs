@@ -31,4 +31,8 @@ public record PaymentInfo
         return new PaymentInfo(title, description);
     }
 }
-public record PaymentInfoList(List<PaymentInfo>? Data);
+
+public record PaymentInfoList
+{
+    public List<PaymentInfo> Data { get; set; }
+}

@@ -42,7 +42,7 @@ public class Pet : EntityBase<PetId>
         if (healthInfo is null) return Result.Failure<Pet>("Информация о здоровье питомца обязательна");
         if (address is null) return Result.Failure<Pet>("Адрес обязателен");
         
-        return new Pet(PetId.New())
+        return new Pet(PetId.CreateNew())
         {
             Name = name,
             Species = species,

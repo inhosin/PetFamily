@@ -11,6 +11,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>
     {
         builder.ToTable("pets");
         builder.HasKey(x => x.Id); // primary key
+        builder.Property(x => x.Id).HasConversion(id => id.Value, value => PetId.Create(value));
         builder.Property(x => x.Name).ConfigureString();
         builder.Property(x => x.Description).ConfigureString(Constants.StringLengthLong);
         builder.Property(x => x.Color).ConfigureString();

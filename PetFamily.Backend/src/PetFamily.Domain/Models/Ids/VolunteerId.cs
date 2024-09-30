@@ -10,10 +10,11 @@ public class VolunteerId: Id<Guid>
     /// <summary>
     /// Create a new VolunteerId
     /// </summary>
-    public static VolunteerId NewId() => new(Guid.NewGuid());
+    public static VolunteerId CreateNew() => new(Guid.NewGuid());
     /// <summary>
     /// Create an empty VolunteerId
     /// </summary>
     /// <returns></returns>
-    public static VolunteerId Empty() => new(Guid.Empty);
+    public static VolunteerId CreateEmpty() => new(Guid.Empty);
+    public static VolunteerId Create(Guid value) => new(value);
 }

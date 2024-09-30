@@ -6,6 +6,7 @@ namespace PetFamily.Domain.Models;
 public class PetPhoto : EntityBase<PetPhotoId>
 {
     public PetId PetId { get; }
+    public Pet Pet { get; }
     public string StoragePath { get; }   // Путь хранения фотографии
     public bool IsMainPhoto { get; private set; }
 
@@ -24,7 +25,7 @@ public class PetPhoto : EntityBase<PetPhotoId>
             && !storagePath.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             return Result.Failure<PetPhoto>("Фотография должна быть в формате jpg или png");
         
-        return new PetPhoto(PetPhotoId.NewId(), petId, storagePath, isMainPhoto);
+        return new PetPhoto(PetPhotoId.CreateNew(), petId, storagePath, isMainPhoto);
     }
 
     /// <summary>

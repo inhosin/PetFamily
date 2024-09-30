@@ -11,6 +11,7 @@ public class VolunteerConfiguration : IEntityTypeConfiguration<Volunteer>
     {
         builder.ToTable("volunteers");
         builder.HasKey(x => x.Id); // primary key
+        builder.Property(x => x.Id).HasConversion(id => id.Value, value => VolunteerId.Create(value));
         builder.Property(x => x.FullName).ConfigureString(Constants.StringLengthMedium);
         builder.Property(x => x.Email).ConfigureString(Constants.StringLengthMedium);
         builder.Property(x => x.Description).ConfigureString(Constants.StringLengthLong);
